@@ -1,3 +1,4 @@
+import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 
@@ -16,6 +17,12 @@ interface CreateRoomRequest {
 
 export async function POST(req: Request) {
   try {
+    const { userId } = auth();
+
+    if (!userId) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+
     const createRoomRequest: CreateRoomRequest = await req.json();
 
     const validationError = validateCreateRoomRequest(createRoomRequest);
@@ -37,17 +44,20 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(
-      { message: { result: "Room successfully created", data: createRoom } },
+      { result: "success", data: createRoom },
       { status: 200 }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     if (error instanceof Error) {
       console.error(error);
-      return NextResponse.json({ message: error.message }, { status: 500 });
+      return NextResponse.json(
+        { result: "error", message: error.message },
+        { status: 500, statusText: "Internal Server Error" }
+      );
     }
 
     return NextResponse.json(
-      { message: "Internal Server Error" },
+      { result: "Internal Server Error" },
       { status: 500 }
     );
   }
