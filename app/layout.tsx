@@ -3,7 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { dark, neobrutalism } from "@clerk/themes";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Header from "./components/Header";
+import Header from "./components/common/Header";
 import "@styles/globals.scss";
 import StyledComponentsRegistry from "@/lib/AntdRegistry";
 

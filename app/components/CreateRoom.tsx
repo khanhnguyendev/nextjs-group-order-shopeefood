@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import axios from "axios";
 import { Button, Modal } from "antd";
-import InputText from "@components/Input/InputText";
+import InputText from "@components/common/Input/InputText";
 
 type Props = {};
 

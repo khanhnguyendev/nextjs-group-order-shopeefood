@@ -27,17 +27,20 @@ const Header = (props: Props) => {
           {!userId && (
             <>
               {/* Display login and registration links if user is not authenticated */}
-              <Link href="login" className="hover:text-indigo-300 mr-4">
+              <Link href="/auth/login" className="hover:text-indigo-300 mr-4">
                 LogIn
               </Link>
-              <Link href="registration" className="hover:text-indigo-300 mr-4">
+              <Link
+                href="/auth/registration"
+                className="hover:text-indigo-300 mr-4"
+              >
                 Register
               </Link>
             </>
           )}
           {userId && (
             // Display the profile link if the user is authenticated
-            <Link href="profile" className="hover:text-indigo-300 mr-4">
+            <Link href="/auth/profile" className="hover:text-indigo-300 mr-4">
               Profile
             </Link>
           )}
