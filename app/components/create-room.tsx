@@ -54,9 +54,6 @@ const CreateRoom = (props: Props) => {
         isPrivate: true,
         password: "password",
       });
-      if (response) {
-        console.log(response.data);
-      }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
