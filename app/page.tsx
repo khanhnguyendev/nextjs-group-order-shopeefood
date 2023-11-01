@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs"; // Clerk authentication
 
-import CreateRoom from "@components/create-room";
+import CreateRoom from "@components/createroom/CreateRoom";
 
 // Define the Home functional component
 export default function Home() {
@@ -17,7 +17,9 @@ export default function Home() {
       )}
       {userId && (
         <>
-          <CreateRoom />
+          <div className="flex flex-col space-y-6">
+            <CreateRoom />
+          </div>
         </>
       )}
     </main>

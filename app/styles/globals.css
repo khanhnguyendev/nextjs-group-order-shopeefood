@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --font-family: 'NeoBrutal', sans-serif;
+  }
+  
+  @font-face {
+    font-family: 'NeoBrutal';
+    src: url('/fonts/NeoBrutal/Brutel-ExtraBold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  html {
+    font-family: var(--font-family);
+  }
+  
