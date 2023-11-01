@@ -18,7 +18,7 @@ const Header = (props: Props) => {
           {/* Create a link to the home page */}
           <Link href="/">
             <div className="hover:text-indigo-300 text-sm uppercase font-bold">
-              Clerk Starter
+              Order ShopeeFood
             </div>
           </Link>
         </div>
