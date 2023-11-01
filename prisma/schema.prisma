@@ -11,12 +11,15 @@ datasource db {
 }
 
 model Room {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  url         String
-  title       String
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@unique([url])
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  restaurantId Int
+  deliveryId   Int
+  shopUrl      String
+  roomName     String
+  description  String?
+  expiredAt    DateTime
+  isPrivate    Boolean
+  password     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
