@@ -41,7 +41,7 @@ const Header = (props: Props) => {
           {userId && (
             // Display the profile link if the user is authenticated
             <Link href="/auth/profile" className="hover:text-indigo-300 mr-4">
-              Profile
+              <button className="text-base">Profile</button>
             </Link>
           )}
           <div className="ml-auto">
