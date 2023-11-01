@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Header from "./components/common/Header";
 import "@styles/globals.scss";
-import StyledComponentsRegistry from "@/lib/AntdRegistry";
+import StyledComponentsRegistry from "@/libs/AntdRegistry";
 
 // Create a custom font using the Inter font family with Latin subset
 const inter = Inter({ subsets: ["latin"] });
