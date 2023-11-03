@@ -31,14 +31,12 @@ export default function RootLayout({
     >
       <html lang="en">
         <body className={inter.className}>
+          {/* Include the Header component */}
+          <Header />
           {/* Main content container */}
           <main className="mx-auto dark:text-indigo-50 text-black">
-            {/* Include the Header component */}
-            <Header />
-
             {/* Content area */}
-            <div>
-              {/* <div className="flex items-start justify-center min-h-screen"> */}
+            <div className="flex items-start justify-center min-h-screen">
               <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
             </div>
           </main>

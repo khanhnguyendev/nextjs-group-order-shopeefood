@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import classNames from "classnames";
 import axios from "axios";
 
-import Input from "@components/ui/Input";
+import Input from "@components/ui/neo-brutalism/Input";
+import Button from "../ui/neo-brutalism/Button";
+import Alert from "../ui/neo-brutalism/custom/AlertIconNew";
 
 type RoomData = {
   shopUrl: string;
@@ -36,6 +38,7 @@ const CreateRoom = () => {
   const createRoomAPI = async () => {
     if (validateRoomData()) {
       try {
+        // default set room expired in 2 hrs
         const now = Date.now();
         const twoHoursLater = new Date(now + 2 * 60 * 60 * 1000);
 
@@ -78,6 +81,13 @@ const CreateRoom = () => {
       return false;
     }
 
+    // Validation pattern for shopeefood url
+    const pattern = /^https:\/\/shopeefood\.vn\/[\w-]+\/[\w-]+$/;
+    if (!pattern.test(roomData.shopUrl)) {
+      setError("ShopeeFood URL is invalid.");
+      return false;
+    }
+
     setError("");
     return true;
   };
@@ -85,27 +95,25 @@ const CreateRoom = () => {
   return (
     <div
       className={classNames(
-        "w-96 md:w-96 px- py-4 bg-white border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] grid place-content-center"
+        "w-96 px- py-4 bg-white border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] grid place-content-center"
       )}
     >
-      <div className="flex w-56 flex-col space-y-6">
-        <h1 className="text-2xl mb-4">Create New Group</h1>
+      <div className="flex w-70 flex-col space-y-6">
+        <Alert message="Create new room" />
 
         <div className="flex flex-col space-y-4">
           {/* Input for Room Name */}
           <Input
             placeholder="Room Name"
-            rounded="full"
             value={roomData.roomName}
-            onChange={(e) => updateRoomData("roomName", e.target.value)}
+            onChange={(value) => updateRoomData("roomName", value)}
           />
 
           {/* Input for Shopeefood URL */}
           <Input
             placeholder="Shopeefood URL"
-            rounded="full"
             value={roomData.shopUrl}
-            onChange={(e) => updateRoomData("shopUrl", e.target.value)}
+            onChange={(value) => updateRoomData("shopUrl", value)}
           />
 
           {/* Checkbox for Private Mode */}
@@ -124,24 +132,18 @@ const CreateRoom = () => {
           {roomData.isPrivate && (
             <Input
               placeholder="Password"
-              rounded="full"
               value={roomData.password}
-              onChange={(e) => updateRoomData("password", e.target.value)}
+              onChange={(value) => updateRoomData("password", value)}
             />
           )}
         </div>
 
         {/* Button group */}
-        <div className="flex space-x-2 mx-auto w-32">
+        <div className="flex justify-center space-x-10 mx-auto w-32">
           <button className="text-base" onClick={resetRoomData}>
             Cancel
           </button>
-          <button
-            className="h-12 border-black border-2 p-2.5 bg-[#A6FAFF] hover:bg-[#79F7FF] hover:shadow-[2px_2px_0px_rgba(0,0,0,1)] active:bg-[#00E1EF] rounded-full"
-            onClick={createRoomAPI}
-          >
-            Create
-          </button>
+          <Button onClick={createRoomAPI}>Create</Button>
         </div>
 
         {error && <p className="text-red-500">{error}</p>}

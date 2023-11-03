@@ -1,25 +1,51 @@
-import React from "react";
+"use client";
 
-import prisma from "@libs/prismadb";
-import Image from "next/image";
+import React, { useState, useEffect } from "react";
+import { Menu, Room } from "@prisma/client";
+
+import { getMenuData, getRoomData } from "../../../actions/fetcher";
+
+import ImageCard from "../ui/neo-brutalism/ImageCard";
+import Accordion from "../ui/neo-brutalism/Accordion";
+import Button from "../ui/neo-brutalism/Button";
 
 interface ServerSidebarProps {
   roomId: string;
 }
 
-export default async function MenuList({ roomId }: ServerSidebarProps) {
-  const room = await prisma.room.findUnique({
-    where: {
-      id: roomId,
-    },
-  });
+export default function MenuList({ roomId }: ServerSidebarProps) {
+  const [room, setRoomData] = useState<Room | null>();
+  const [menu, setMenuData] = useState<Menu[] | null>();
+  const [largestContentHeight, setLargestContentHeight] = useState<number>(0);
 
-  const menu = await prisma.menu.findMany({
-    where: {
-      restaurantId: room?.restaurantId,
-      deliveryId: room?.deliveryId,
-    },
-  });
+  useEffect(() => {
+    getRoomData({ roomId }).then((room) => {
+      setRoomData(room);
+    });
+  }, [roomId]);
+
+  useEffect(() => {
+    if (room && "restaurantId" in room && "deliveryId" in room) {
+      const { restaurantId, deliveryId } = room;
+      getMenuData({ restaurantId, deliveryId }).then((menu) => {
+        setMenuData(menu);
+      });
+    }
+  }, [room]);
+
+  // Calculate the height of Title food
+  useEffect(() => {
+    if (menu) {
+      let maxHeight = 0;
+      menu.forEach((dish) => {
+        const length = Math.min(20 + dish.name.length * 1, 300);
+        if (length > maxHeight) {
+          maxHeight = length;
+        }
+      });
+      setLargestContentHeight(maxHeight);
+    }
+  }, [menu]);
 
   const getImgSrc = (photos: any) => {
     const photo = photos.find((photo: any) => photo.width === 560);
@@ -29,36 +55,29 @@ export default async function MenuList({ roomId }: ServerSidebarProps) {
     return photos[0].value;
   };
 
+  const createNewOrder = () => {};
+
   return (
     <>
-      {menu.map((dish) => (
-        <div
-          key={dish.id}
-          className="w-80 h-full border-black border-2 rounded-md hover:shadow-[8px_8px_0px_rgba(0,0,0,1)] bg-white"
-        >
-          <a className="block cursor-pointer">
-            <article className="w-full h-full">
-              <figure className="w-full h-1/2 border-black border-b-2">
-                <Image
-                  src={getImgSrc(dish.photos)}
-                  alt="thumbnail"
-                  width={600}
-                  height={600}
-                  className="w-full h-full object-cover"
+      {menu &&
+        menu.map((dish) => (
+          <div key={dish.id} className="flex relative">
+            <ImageCard imageUrl={getImgSrc(dish.photos)}>
+              <div className="flex flex-wrap gap-2 justify-center">
+                <Accordion
+                  question={dish.name}
+                  answer={dish.description || "No description"}
+                  largestContentHeight={largestContentHeight}
                 />
-              </figure>
-              <div className="px-6 py-5 text-left h-full">
-                <p className="text-base mb-4">{dish.totalLike}</p>
-                <h1 className="text-[32px] mb-4">{dish.name}</h1>
-                <p className="text-xs mb-4 line-clamp-4">{dish.description}</p>
-                <button className="h-12 border-black border-2 p-2.5 bg-[#A6FAFF] hover:bg-[#79F7FF] hover:shadow-[2px_2px_0px_rgba(0,0,0,1)] active:bg-[#00E1EF] rounded-md">
-                  {dish.price}
-                </button>
+                <div className="text-center mt-2">
+                  <Button onClick={createNewOrder} disabled={false}>
+                    {dish.discountPrice}
+                  </Button>
+                </div>
               </div>
-            </article>
-          </a>
-        </div>
-      ))}
+            </ImageCard>
+          </div>
+        ))}
     </>
   );
 }
