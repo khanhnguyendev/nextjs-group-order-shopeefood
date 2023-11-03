@@ -14,6 +14,7 @@ model Room {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   restaurantId Int
   deliveryId   Int
+  dishTypeIds  Int[]
   shopUrl      String
   roomName     String
   description  String?
@@ -22,4 +23,43 @@ model Room {
   password     String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model Menu {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  restaurantId  Int
+  deliveryId    Int
+  dishTypeId    Int
+  dishTypeName  String
+  name          String
+  description   String?
+  photos        Json[]
+  price         String
+  discountPrice String
+  totalLike     String
+  displayOrder  Float
+  isActive      Boolean
+  isDeleted     Boolean
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([restaurantId, deliveryId, dishTypeId])
+}
+
+model User {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String   @unique
+  email        String   @unique
+  username     String
+  firstName    String
+  lastName     String
+  createdAt    DateTime
+  updatedAt    DateTime
+  imageUrl     String
+  hasImage     Boolean
+  gender       String
+  birthday     String
+  lastSignInAt DateTime @default(now())
+
+  @@index([userId, email])
 }

@@ -4,7 +4,7 @@ import { dark, neobrutalism } from "@clerk/themes";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Header from "./components/common/Header";
-import "@styles/globals.css";
+import "./globals.css";
 import StyledComponentsRegistry from "@/libs/AntdRegistry";
 
 // Create a custom font using the Inter font family with Latin subset
