@@ -36,7 +36,7 @@ const CreateRoom = () => {
         const now = Date.now();
         const twoHoursLater = new Date(now + 2 * 60 * 60 * 1000);
 
-        const response = await axios.post("/api/create-room", {
+        const response = await axios.post("/api/room/create", {
           shopUrl: roomData.shopUrl,
           roomName: roomData.roomName,
           expiredAt: twoHoursLater,
