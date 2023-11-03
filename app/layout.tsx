@@ -37,7 +37,8 @@ export default function RootLayout({
             <Header />
 
             {/* Content area */}
-            <div className="flex items-start justify-center min-h-screen">
+            <div>
+              {/* <div className="flex items-start justify-center min-h-screen"> */}
               <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
             </div>
           </main>

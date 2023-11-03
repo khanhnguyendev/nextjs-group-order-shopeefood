@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import classNames from "classnames";
 import axios from "axios";
 
@@ -14,6 +15,8 @@ type RoomData = {
 };
 
 const CreateRoom = () => {
+  const router = useRouter();
+
   const [roomData, setRoomData] = useState<RoomData>({
     shopUrl: "",
     roomName: "",
@@ -43,6 +46,11 @@ const CreateRoom = () => {
           isPrivate: roomData.isPrivate,
           password: roomData.password,
         });
+
+        if (response?.data?.id) {
+          const roomId = response?.data?.id;
+          router.replace(`/room/${roomId}`);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
