@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@libs/prismadb";
+import prisma from "@/libs/prismadb";
 
 interface RoomDataProps {
   roomId: string;

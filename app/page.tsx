@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs"; // Clerk authentication
 
-import CreateRoom from "@components/createroom/CreateRoom";
+import CreateRoom from "@/components/createroom/CreateRoom";
 
 // Define the Home functional component
 export default function Home() {

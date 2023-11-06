@@ -3,7 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { dark, neobrutalism } from "@clerk/themes";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Header from "./components/common/Header";
+import Header from "@/components/common/Header";
 import "./globals.css";
 import StyledComponentsRegistry from "@/libs/AntdRegistry";
 
@@ -34,7 +34,7 @@ export default function RootLayout({
           {/* Include the Header component */}
           <Header />
           {/* Main content container */}
-          <main className="mx-auto dark:text-indigo-50 text-black">
+          <main className="mx-auto dark:text-indigo-50 text-black mt-[40px]">
             {/* Content area */}
             <div className="flex items-start justify-center min-h-screen">
               <StyledComponentsRegistry>{children}</StyledComponentsRegistry>

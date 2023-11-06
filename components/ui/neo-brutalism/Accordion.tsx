@@ -6,7 +6,7 @@ import { FiPlus } from "react-icons/fi";
 type Props = {
   question: string;
   answer: string;
-  largestContentHeight: number;
+  largestContentHeight?: number;
 };
 
 export default function Accordion({
@@ -33,7 +33,7 @@ export default function Accordion({
           borderBottom: showContent ? "solid 2px" : "0px",
           height: `${largestQuentionHeight}px`,
         }}
-        className="flex w-full h-[50px] items-center justify-between rounded-[5px] border-black bg-[#d8c1e6] p-5 font-semibold text-sm"
+        className="flex w-full h-[50px] items-center justify-between rounded-[5px] border-black bg-[#ffffff] p-5 font-semibold text-sm"
         onClick={() => {
           setShowContent(!showContent);
         }}
