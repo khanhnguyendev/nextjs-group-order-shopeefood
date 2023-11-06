@@ -1,13 +1,18 @@
-import { auth } from "@clerk/nextjs";
+import { auth, clerkClient } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 
-import prisma from "@libs/prismadb";
-import { getDeliveryDishes, getDeliveryInfo } from "../../shopeefood/shopee";
+import prisma from "@/libs/prismadb";
+import {
+  getDeliveryDetail,
+  getDeliveryDishes,
+  getDeliveryInfo,
+} from "@/app/api/shopeefood/shopee";
 
 const API = "/api/room/create";
 
 type CreateRoomRequest = {
+  hostedBy: string;
   restaurantId: number;
   deliveryId: number;
   dishTypeIds: number[];
@@ -18,6 +23,39 @@ type CreateRoomRequest = {
   password?: string;
 };
 
+type CreateShopRequest = {
+  restaurantId: number;
+  deliveryId: number;
+  name: string;
+  description: string | null;
+  address: string;
+  url: string;
+  phones: string;
+  photos: string[];
+  categories: string[];
+  rating: number;
+  totalReview: number;
+};
+
+type Rating = {
+  total_review: number;
+  avg: number;
+  display_total_review: string;
+};
+
+type DeliveryDetail = {
+  restaurant_id: number;
+  delivery_id: number;
+  name: string;
+  short_description: string;
+  address: string;
+  url: string;
+  phones: string[];
+  photos: string[];
+  categories: string[];
+  rating: Rating;
+};
+
 type MenuInfo = {
   dish_type_id: number;
   dish_type_name: string;
@@ -25,8 +63,8 @@ type MenuInfo = {
 };
 
 type Dish = {
-  restaurant_id: number;
-  delivery_id: number;
+  restaurant_id: string;
+  delivery_id: string;
   dish_type_id: number;
   dish_type_name: string;
   name: string;
@@ -46,11 +84,9 @@ type Price = {
   value: string;
 };
 
-interface Menu {
+type Menu = {
   restaurantId: number;
   deliveryId: number;
-  dishTypeId: number;
-  dishTypeName: string;
   name: string;
   description: string;
   photos: string[];
@@ -60,7 +96,7 @@ interface Menu {
   displayOrder: number;
   isActive: boolean;
   isDeleted: boolean;
-}
+};
 
 export async function POST(req: Request) {
   try {
@@ -69,6 +105,8 @@ export async function POST(req: Request) {
     if (!userId) {
       return new Response("Unauthorized", { status: 401 });
     }
+
+    const user = await clerkClient.users.getUser(userId);
 
     const createRoomRequest: CreateRoomRequest = await req.json();
     const validationError = validateCreateRoomRequest(createRoomRequest);
@@ -84,24 +122,24 @@ export async function POST(req: Request) {
       shopPathName
     );
 
-    // Get Restaurant menu from ShopeeFood API
-    const dishesFromAPI = await getDeliveryDishes(delivery_id);
-    const menuInfo: MenuInfo[] = dishesFromAPI.reply.menu_infos;
-    const dishTypeIds: number[] = [];
+    // ==========================================================
+    // Step 1: Check and create Shop
+    // ==========================================================
+    await checkAndUpdateShop(delivery_id);
 
-    // Get Restaurant dish type ids
-    menuInfo.forEach((dish) => {
-      dishTypeIds.push(dish.dish_type_id);
-    });
+    // ==========================================================
+    // Step 2: Check and create Menu
+    // ==========================================================
+    await checkAndUpdateDishes(restaurant_id, delivery_id);
 
-    await checkAndUpdateDishes(restaurant_id, delivery_id, dishesFromAPI);
-
-    // Save Restaurant info to db
+    // ==========================================================
+    // Step 3: Create new Room
+    // ==========================================================
     const createRoom = await createNewRoom({
       ...createRoomRequest,
       restaurantId: restaurant_id,
       deliveryId: delivery_id,
-      dishTypeIds: dishTypeIds,
+      hostedBy: user.id,
     });
 
     console.log(`[${API}][method:POST] Room has been successfully created!`);
@@ -113,12 +151,246 @@ export async function POST(req: Request) {
   }
 }
 
-// Create room
+// Step 1: Check and create Shop
+async function checkAndUpdateShop(deliveryId: string) {
+  // Step 1.1: Retriving Restaurant Detail from ShopeeFood API
+  const restaurantDetail = await getDeliveryDetail(deliveryId);
+  const deliveryDetail: DeliveryDetail = restaurantDetail.reply.delivery_detail;
+
+  // Step 1.2: Convert response ShopeeAPI to Prisma Model
+  const createShopRequest = convertDeliveryDetailToShop(deliveryDetail);
+
+  // Step 1.3: Create or update RestaurantDetail in DB
+  await createOrUpdateShop(createShopRequest);
+}
+
+// Step 1.2: Convert response ShopeeAPI to Prisma Model
+function convertDeliveryDetailToShop(
+  detail: DeliveryDetail
+): CreateShopRequest {
+  return {
+    restaurantId: detail.restaurant_id,
+    deliveryId: detail.delivery_id,
+    name: detail.name,
+    description: detail.short_description,
+    address: detail.address,
+    url: detail.url,
+    phones: detail.phones[0],
+    photos: detail.photos,
+    categories: detail.categories,
+    rating: detail.rating.avg,
+    totalReview: detail.rating.total_review,
+  };
+}
+
+// Step 1.3: Create or update RestaurantDetail in DB
+async function createOrUpdateShop(createShopRequest: CreateShopRequest) {
+  try {
+    const {
+      restaurantId,
+      deliveryId,
+      name,
+      description,
+      address,
+      url,
+      phones,
+      photos,
+      categories,
+      rating,
+      totalReview,
+    } = createShopRequest;
+
+    const existingShop = await prisma.shop.findFirst({
+      where: {
+        deliveryId,
+      },
+    });
+
+    if (existingShop) {
+      console.log(`[${API}][createOrUpdateShop] Updating shop data...`);
+      const updatedShop = await prisma.shop.update({
+        where: { id: existingShop.id },
+        data: {
+          name,
+          description,
+          address,
+          url,
+          phones,
+          photos,
+          categories,
+          rating,
+          totalReview,
+        },
+      });
+      console.log(
+        `[${API}][createOrUpdateShop] Shop has been successfully updated!`,
+        updatedShop
+      );
+    } else {
+      console.log(`[${API}][createOrUpdateShop] Creating new shop...`);
+      const newShop = await prisma.shop.create({
+        data: {
+          restaurantId,
+          deliveryId,
+          name,
+          description,
+          address,
+          url,
+          phones,
+          photos,
+          categories,
+          rating,
+          totalReview,
+        },
+      });
+      console.log(
+        `[${API}][createOrUpdateShop] Shop has been successfully created!`,
+        newShop
+      );
+    }
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2002") {
+        console.log("Shop already exists");
+      }
+    }
+
+    console.error(e);
+    throw e;
+  }
+}
+
+// Step 2: Check and create Menu
+async function checkAndUpdateDishes(restaurantId: string, deliveryId: string) {
+  // Step 2.1: Retriving Menu from ShopeeFood API
+  const dishesFromAPI = await getDeliveryDishes(deliveryId);
+
+  // Step 2.2: Create or update Menu
+  await createOrUpdateDishes(restaurantId, deliveryId, dishesFromAPI);
+}
+
+// Step 2.2: Create or update Menu
+async function createOrUpdateDishes(
+  restaurantId: string,
+  deliveryId: string,
+  dishesFromAPI: any
+) {
+  const intRestaurantId = Number(restaurantId);
+  const intDeliveryId = Number(deliveryId);
+  if (!intRestaurantId || !intDeliveryId) {
+    throw NaN;
+  }
+
+  // Step 2.2.1: Retriving Menu from DB
+  const existingDishes = await prisma.menu.findMany({
+    where: {
+      restaurantId: intRestaurantId,
+      deliveryId: intDeliveryId,
+    },
+  });
+
+  // Step 2.2.2: Response ShopeeAPI
+  const menuInfo: MenuInfo[] = dishesFromAPI.reply.menu_infos;
+  const numOfDishesAPI = menuInfo.reduce((total, dishType) => {
+    return total + dishType.dishes.length;
+  }, 0);
+
+  // Step 2.2.3: Compare the quantity of dishes (DB vs ShopeeAPI)
+  if (numOfDishesAPI !== existingDishes.length) {
+    console.warn(
+      `[${API}][checkAndUpdateDishes] Dishes is out of date or conflict with API `
+    );
+    console.log(
+      `[${API}][checkAndUpdateDishes] API: ${numOfDishesAPI} -- DB: ${existingDishes.length}`
+    );
+    console.log(`[${API}][checkAndUpdateDishes] Removing old dishes...`);
+    // Step 2.2.3.1: Remove old Menu in the database
+    await removeMenus(restaurantId, deliveryId);
+
+    // Step 2.2.3.2: Create new Menu
+    console.log(`[${API}][checkAndUpdateDishes] Updating new dishes...`);
+    await createMenuRoom(dishesFromAPI, restaurantId, deliveryId);
+  }
+
+  console.log(`[${API}][checkAndUpdateDishes] Dishes is up-to-date!`);
+}
+
+// Step 2.2.3.1: Remove old Menu in the database
+async function removeMenus(restaurantId: string, deliveryId: string) {
+  const oldMenu = await prisma.menu.deleteMany({
+    where: {
+      deliveryId,
+      restaurantId,
+    },
+  });
+  console.log(
+    `[${API}][removeMenus] Old dishes is successfully removed `,
+    oldMenu
+  );
+}
+
+// Step 2.2.3.2: Create new Menu
+async function createMenuRoom(
+  dishesFromAPI: any,
+  restaurantId: string,
+  deliveryId: string
+) {
+  const menuInfo: MenuInfo[] = dishesFromAPI.reply.menu_infos;
+  const menus: Dish[] = [];
+
+  menuInfo.forEach((menu) => {
+    const { dishes } = menu;
+
+    dishes.forEach((dish) => {
+      const updatedDish: Dish = {
+        ...dish,
+        restaurant_id: restaurantId,
+        delivery_id: deliveryId,
+      };
+      menus.push(updatedDish);
+    });
+  });
+
+  const listOfMenus: Menu[] = convertDishesToMenus(menus);
+
+  // Step 2.2.3.2.1: Save Menus to DB
+  await saveMenusInBatches(listOfMenus);
+}
+
+// Step 2.2.3.2.1: Save Menus to DB using batch
+async function saveMenusInBatches(menus: Menu[]) {
+  const batchSize = 100;
+
+  for (let i = 0; i < menus.length; i += batchSize) {
+    const batch = menus.slice(i, i + batchSize);
+    // Step 2.2.3.2.1.1: Save Menu to DB
+    await saveMenus(batch);
+  }
+}
+
+// Step 2.2.3.2.1.1: Save Menu to DB
+async function saveMenus(menus: Menu[]) {
+  try {
+    const createdMenus = await prisma.menu.createMany({
+      data: menus,
+    });
+
+    console.log(
+      `[${API}][saveMenus] Dishes is successfully saved`,
+      createdMenus
+    );
+  } catch (error) {
+    console.error(`[${API}][saveMenus]`, error);
+    throw error; // Consider handling the error or rethrowing it if needed
+  }
+}
+
+// Step 3: Create new Room
 async function createNewRoom(createRoomRequest: CreateRoomRequest) {
   const {
+    hostedBy,
     restaurantId,
     deliveryId,
-    dishTypeIds,
     shopUrl,
     roomName,
     expiredAt,
@@ -128,9 +400,9 @@ async function createNewRoom(createRoomRequest: CreateRoomRequest) {
   try {
     return await prisma.room.create({
       data: {
+        hostedBy,
         restaurantId,
         deliveryId,
-        dishTypeIds,
         shopUrl,
         roomName,
         expiredAt,
@@ -149,113 +421,6 @@ async function createNewRoom(createRoomRequest: CreateRoomRequest) {
     }
     console.error(e);
     throw e;
-  }
-}
-
-// Check and update dishes
-async function checkAndUpdateDishes(
-  restaurantId: number,
-  deliveryId: number,
-  dishesFromAPI: any
-) {
-  const dishesFromDB = await prisma.menu.findMany({
-    where: {
-      deliveryId,
-      restaurantId,
-    },
-  });
-
-  const menuInfo: MenuInfo[] = dishesFromAPI.reply.menu_infos;
-  const numOfDishesAPI = menuInfo.reduce((total, dishType) => {
-    return total + dishType.dishes.length;
-  }, 0);
-
-  // Compare the quantity of dishes
-  if (numOfDishesAPI !== dishesFromDB.length) {
-    console.warn(
-      `[${API}][checkAndUpdateDishes] Dishes is out of date or conflict with API `
-    );
-    console.log(
-      `[${API}][checkAndUpdateDishes] API: ${numOfDishesAPI} -- DB: ${dishesFromDB.length}`
-    );
-    console.log(`[${API}][checkAndUpdateDishes] Removing old dishes...`);
-    // Remove old dishes in the database
-    await removeMenus(restaurantId, deliveryId);
-
-    // Save menu to db
-    console.log(`[${API}][checkAndUpdateDishes] Updating new dishes...`);
-    await createMenuRoom(dishesFromAPI, restaurantId, deliveryId);
-  }
-
-  console.log(`[${API}][checkAndUpdateDishes] Dishes is up-to-date!`);
-}
-
-// Remove dishes
-async function removeMenus(restaurantId: number, deliveryId: number) {
-  const oldMenu = await prisma.menu.deleteMany({
-    where: {
-      deliveryId,
-      restaurantId,
-    },
-  });
-  console.log(
-    `[${API}][removeMenus] Old dishes is successfully removed `,
-    oldMenu
-  );
-}
-
-// Create dishes of room
-async function createMenuRoom(
-  dishesFromAPI: any,
-  restaurantId: number,
-  deliveryId: number
-) {
-  const menuInfo: MenuInfo[] = dishesFromAPI.reply.menu_infos;
-  const menus: Dish[] = [];
-
-  menuInfo.forEach((menu) => {
-    const { dish_type_id, dish_type_name, dishes } = menu;
-
-    dishes.forEach((dish) => {
-      const updatedDish: Dish = {
-        ...dish,
-        restaurant_id: restaurantId,
-        delivery_id: deliveryId,
-        dish_type_id,
-        dish_type_name,
-      };
-      menus.push(updatedDish);
-    });
-  });
-
-  const listOfMenus: Menu[] = convertDishesToMenus(menus);
-
-  // Save dishes to DB
-  await saveMenusInBatches(listOfMenus);
-}
-
-async function saveMenusInBatches(menus: Menu[]) {
-  const batchSize = 100;
-
-  for (let i = 0; i < menus.length; i += batchSize) {
-    const batch = menus.slice(i, i + batchSize);
-    await saveMenus(batch);
-  }
-}
-
-async function saveMenus(menus: Menu[]) {
-  try {
-    const createdMenus = await prisma.menu.createMany({
-      data: menus,
-    });
-
-    console.log(
-      `[${API}][saveMenus] Dishes is successfully saved`,
-      createdMenus
-    );
-  } catch (error) {
-    console.error(`[${API}][saveMenus]`, error);
-    throw error; // Consider handling the error or rethrowing it if needed
   }
 }
 
@@ -330,8 +495,6 @@ function convertDishToMenu(dish: Dish): Menu {
   return {
     restaurantId: dish.restaurant_id,
     deliveryId: dish.delivery_id,
-    dishTypeId: dish.dish_type_id,
-    dishTypeName: dish.dish_type_name,
     name: dish.name,
     description: dish.description !== null ? dish.description : "",
     photos: dish.photos,
