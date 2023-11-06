@@ -1,6 +1,6 @@
 import React from "react";
 
-import MenuList from "@/app/components/room/MenuList";
+import MenuList from "@/components/room/MenuList";
 
 const RoomIdLayout = async ({ params }: { params: { roomId: string } }) => {
   return (

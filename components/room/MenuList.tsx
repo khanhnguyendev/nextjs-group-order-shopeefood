@@ -3,11 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { Menu, Room } from "@prisma/client";
 
-import { getMenuData, getRoomData } from "../../../actions/fetcher";
+import { getMenuData, getRoomData } from "@/actions/fetcher";
+import { getCreatedAtAsString } from "@/utils/dateUtils";
 
-import ImageCard from "../ui/neo-brutalism/ImageCard";
-import Accordion from "../ui/neo-brutalism/Accordion";
-import Button from "../ui/neo-brutalism/Button";
+import ImageCard from "@/components/ui/neo-brutalism/ImageCard";
+import Accordion from "@/components/ui/neo-brutalism/Accordion";
+import Button from "@/components/ui/neo-brutalism/Button";
 
 interface ServerSidebarProps {
   roomId: string;
@@ -59,9 +60,17 @@ export default function MenuList({ roomId }: ServerSidebarProps) {
 
   return (
     <>
+      <div className="flex w-full justify-center items-center text-center">
+        {room && (
+          <Accordion
+            question={room.roomName}
+            answer={getCreatedAtAsString(room.createdAt)}
+          />
+        )}
+      </div>
       {menu &&
         menu.map((dish) => (
-          <div key={dish.id} className="flex relative">
+          <div key={dish.id} className="flex">
             <ImageCard imageUrl={getImgSrc(dish.photos)}>
               <div className="flex flex-wrap gap-2 justify-center">
                 <Accordion
