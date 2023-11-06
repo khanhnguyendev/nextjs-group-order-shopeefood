@@ -38,7 +38,9 @@ export default function Accordion({
           setShowContent(!showContent);
         }}
       >
-        <span className="flex flex-wrap">{question}</span>
+        <div className="flex-1">
+          <p className="text-center">{question}</p>
+        </div>
         <FiPlus
           style={{ transform: `rotate(${showContent ? "45deg" : "0"})` }}
           className="ml-4 min-h-[20px] min-w-[20px] transition-transform ease-in-out"

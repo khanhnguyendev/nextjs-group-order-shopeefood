@@ -12,9 +12,9 @@ datasource db {
 
 model Room {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  hostedBy     String
   restaurantId Int
   deliveryId   Int
-  dishTypeIds  Int[]
   shopUrl      String
   roomName     String
   description  String?
@@ -25,12 +25,29 @@ model Room {
   updatedAt    DateTime @updatedAt
 }
 
+model Shop {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  restaurantId Int
+  deliveryId   Int
+  name         String
+  description  String?
+  address      String
+  url          String
+  phones       String
+  photos       Json[]
+  categories   String[]
+  rating       Float
+  totalReview  Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([deliveryId])
+}
+
 model Menu {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   restaurantId  Int
   deliveryId    Int
-  dishTypeId    Int
-  dishTypeName  String
   name          String
   description   String?
   photos        Json[]
@@ -43,7 +60,7 @@ model Menu {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  @@index([restaurantId, deliveryId, dishTypeId])
+  @@index([restaurantId, deliveryId])
 }
 
 model User {

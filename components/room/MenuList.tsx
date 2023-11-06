@@ -4,17 +4,16 @@ import React, { useState, useEffect } from "react";
 import { Menu, Room } from "@prisma/client";
 
 import { getMenuData, getRoomData } from "@/actions/fetcher";
-import { getCreatedAtAsString } from "@/utils/dateUtils";
 
 import ImageCard from "@/components/ui/neo-brutalism/ImageCard";
 import Accordion from "@/components/ui/neo-brutalism/Accordion";
 import Button from "@/components/ui/neo-brutalism/Button";
 
-interface ServerSidebarProps {
+interface MenuListProps {
   roomId: string;
 }
 
-export default function MenuList({ roomId }: ServerSidebarProps) {
+export default function MenuList({ roomId }: MenuListProps) {
   const [room, setRoomData] = useState<Room | null>();
   const [menu, setMenuData] = useState<Menu[] | null>();
   const [largestContentHeight, setLargestContentHeight] = useState<number>(0);
@@ -60,14 +59,6 @@ export default function MenuList({ roomId }: ServerSidebarProps) {
 
   return (
     <>
-      <div className="flex w-full justify-center items-center text-center">
-        {room && (
-          <Accordion
-            question={room.roomName}
-            answer={getCreatedAtAsString(room.createdAt)}
-          />
-        )}
-      </div>
       {menu &&
         menu.map((dish) => (
           <div key={dish.id} className="flex">
@@ -80,7 +71,7 @@ export default function MenuList({ roomId }: ServerSidebarProps) {
                 />
                 <div className="text-center mt-2">
                   <Button onClick={createNewOrder} disabled={false}>
-                    {dish.discountPrice}
+                    {dish.discountPrice ? dish.discountPrice : dish.price}
                   </Button>
                 </div>
               </div>
