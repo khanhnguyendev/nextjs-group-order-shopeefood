@@ -3,17 +3,17 @@
 import React, { useState, useEffect } from "react";
 import { Menu, Room } from "@prisma/client";
 
-import { getMenuData, getRoomData } from "../../../actions/fetcher";
+import { getMenuData, getRoomData } from "@/actions/fetcher";
 
-import ImageCard from "../ui/neo-brutalism/ImageCard";
-import Accordion from "../ui/neo-brutalism/Accordion";
-import Button from "../ui/neo-brutalism/Button";
+import ImageCard from "@/components/ui/neo-brutalism/ImageCard";
+import Accordion from "@/components/ui/neo-brutalism/Accordion";
+import Button from "@/components/ui/neo-brutalism/Button";
 
-interface ServerSidebarProps {
+interface MenuListProps {
   roomId: string;
 }
 
-export default function MenuList({ roomId }: ServerSidebarProps) {
+export default function MenuList({ roomId }: MenuListProps) {
   const [room, setRoomData] = useState<Room | null>();
   const [menu, setMenuData] = useState<Menu[] | null>();
   const [largestContentHeight, setLargestContentHeight] = useState<number>(0);
@@ -61,7 +61,7 @@ export default function MenuList({ roomId }: ServerSidebarProps) {
     <>
       {menu &&
         menu.map((dish) => (
-          <div key={dish.id} className="flex relative">
+          <div key={dish.id} className="flex">
             <ImageCard imageUrl={getImgSrc(dish.photos)}>
               <div className="flex flex-wrap gap-2 justify-center">
                 <Accordion
@@ -71,7 +71,7 @@ export default function MenuList({ roomId }: ServerSidebarProps) {
                 />
                 <div className="text-center mt-2">
                   <Button onClick={createNewOrder} disabled={false}>
-                    {dish.discountPrice}
+                    {dish.discountPrice ? dish.discountPrice : dish.price}
                   </Button>
                 </div>
               </div>

@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import classNames from "classnames";
 import axios from "axios";
 
-import Input from "@components/ui/neo-brutalism/Input";
-import Button from "../ui/neo-brutalism/Button";
-import Alert from "../ui/neo-brutalism/custom/AlertIconNew";
+import Input from "@/components/ui/neo-brutalism/Input";
+import Button from "@/components/ui/neo-brutalism/Button";
+import Alert from "@/components/ui/neo-brutalism/custom/AlertIconNew";
 
 type RoomData = {
   shopUrl: string;
