@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { Room, Shop } from "@prisma/client";
 
 import { getRoomData, getShopData } from "@/actions/fetcher";
-import { getCreatedAtAsString } from "@/utils/dateUtils";
 
 import Accordion from "@/components/ui/neo-brutalism/Accordion";
 
