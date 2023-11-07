@@ -95,47 +95,51 @@ const CreateRoom = () => {
   return (
     <div
       className={classNames(
-        "w-96 px- py-4 bg-white border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] grid place-content-center"
+        "w-[500px] px-4 py-4 bg-white border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] grid place-content-center"
       )}
     >
-      <div className="flex w-70 flex-col space-y-6">
+      <div className="flex flex-col space-y-6">
         <Alert message="Create new room" />
 
         <div className="flex flex-col space-y-4">
-          {/* Input for Room Name */}
-          <Input
-            placeholder="Room Name"
-            value={roomData.roomName}
-            onChange={(value) => updateRoomData("roomName", value)}
-          />
-
-          {/* Input for Shopeefood URL */}
-          <Input
-            placeholder="Shopeefood URL"
-            value={roomData.shopUrl}
-            onChange={(value) => updateRoomData("shopUrl", value)}
-          />
-
-          {/* Checkbox for Private Mode */}
-          <div className="flex flex-row items-center space-x-3">
-            <h3>Private?</h3>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={roomData.isPrivate}
-                onChange={(e) => updateRoomData("isPrivate", e.target.checked)}
-              />
-            </label>
-          </div>
-
-          {/* Input for Password */}
-          {roomData.isPrivate && (
+          <div className="flex flex-col space-y-4 w-[400px]">
+            {/* Input for Room Name */}
             <Input
-              placeholder="Password"
-              value={roomData.password}
-              onChange={(value) => updateRoomData("password", value)}
+              placeholder="Room Name"
+              value={roomData.roomName}
+              onChange={(value) => updateRoomData("roomName", value)}
             />
-          )}
+
+            {/* Input for Shopeefood URL */}
+            <Input
+              placeholder="Shopeefood URL"
+              value={roomData.shopUrl}
+              onChange={(value) => updateRoomData("shopUrl", value)}
+            />
+
+            {/* Checkbox for Private Mode */}
+            <div className="flex flex-row items-center space-x-3">
+              <h3>Private?</h3>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={roomData.isPrivate}
+                  onChange={(e) =>
+                    updateRoomData("isPrivate", e.target.checked)
+                  }
+                />
+              </label>
+            </div>
+
+            {/* Input for Password */}
+            {roomData.isPrivate && (
+              <Input
+                placeholder="Password"
+                value={roomData.password}
+                onChange={(value) => updateRoomData("password", value)}
+              />
+            )}
+          </div>
         </div>
 
         {/* Button group */}

@@ -8,7 +8,13 @@ type Props = {
 export default function ImageCard({ imageUrl, children }: Props) {
   return (
     <figure className="w-[250px] overflow-hidden rounded-md border-2 border-black bg-[#bc95d4] font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-      <Image className="w-full" src={imageUrl} alt="image" />
+      <Image
+        className="w-full"
+        src={imageUrl}
+        alt="image"
+        width={560}
+        height={560}
+      />
       <figcaption className="border-t-2 border-black p-4">
         {children}
       </figcaption>

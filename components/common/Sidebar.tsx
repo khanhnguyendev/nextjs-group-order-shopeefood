@@ -12,6 +12,12 @@ export default function Sidebar() {
       >
         Dashboard
       </Link>
+      <Link
+        href={`/room`}
+        className="sidebaritem block border-b-4 border-r-4 border-black p-4 pl-7 text-lg font-semibold text-black/90 hover:bg-[#bc95d4] m800:p-4 m800:pl-6 m800:text-base"
+      >
+        Room
+      </Link>
     </aside>
   );
 }
