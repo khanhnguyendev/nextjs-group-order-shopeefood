@@ -7,8 +7,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 import StyledComponentsRegistry from "@/libs/AntdRegistry";
-import Sidebar from "@/components/ui/Sidebar";
+import Sidebar from "@/components/common/Sidebar";
 import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
 
 // Create a custom font using the Inter font family with Latin subset
 const inter = Inter({ subsets: ["latin"] });
@@ -42,7 +43,7 @@ export default function RootLayout({
             {/* Main content container */}
             <main className="text-black w-full h-screen overflow-auto">
               {/* Content area */}
-              <div className="flex items-start justify-center  mt-[40px]  mx-auto">
+              <div className="flex items-start justify-center mt-[40px] mb-[150px] mx-auto">
                 <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
               </div>
             </main>

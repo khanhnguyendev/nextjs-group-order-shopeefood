@@ -227,8 +227,7 @@ async function createOrUpdateShop(createShopRequest: CreateShopRequest) {
         },
       });
       console.log(
-        `[${API}][createOrUpdateShop] Shop has been successfully updated!`,
-        updatedShop
+        `[${API}][createOrUpdateShop] Shop has been successfully updated!`
       );
     } else {
       console.log(`[${API}][createOrUpdateShop] Creating new shop...`);
@@ -248,8 +247,7 @@ async function createOrUpdateShop(createShopRequest: CreateShopRequest) {
         },
       });
       console.log(
-        `[${API}][createOrUpdateShop] Shop has been successfully created!`,
-        newShop
+        `[${API}][createOrUpdateShop] Shop has been successfully created!`
       );
     }
   } catch (e) {

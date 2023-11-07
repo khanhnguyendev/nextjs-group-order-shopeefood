@@ -8,6 +8,7 @@ import { getMenuData, getRoomData } from "@/actions/fetcher";
 import ImageCard from "@/components/ui/neo-brutalism/ImageCard";
 import Accordion from "@/components/ui/neo-brutalism/Accordion";
 import Button from "@/components/ui/neo-brutalism/Button";
+import { getImgSrc } from "@/utils/utils";
 
 interface MenuListProps {
   roomId: string;
@@ -46,14 +47,6 @@ export default function MenuList({ roomId }: MenuListProps) {
       setLargestContentHeight(maxHeight);
     }
   }, [menu]);
-
-  const getImgSrc = (photos: any) => {
-    const photo = photos.find((photo: any) => photo.width === 560);
-    if (photo) {
-      return photo.value;
-    }
-    return photos[0].value;
-  };
 
   const createNewOrder = () => {};
 
