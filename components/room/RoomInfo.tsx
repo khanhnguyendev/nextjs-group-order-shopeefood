@@ -30,14 +30,6 @@ export default function RoomInfo({ roomId }: RoomInfoProps) {
     }
   }, [room]);
 
-  const getImgSrc = (photos: any) => {
-    const photo = photos.find((photo: any) => photo.width === 560);
-    if (photo) {
-      return photo.value;
-    }
-    return photos[0].value;
-  };
-
   return (
     <>
       <div className="flex w-full justify-center items-center text-center">

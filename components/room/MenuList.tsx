@@ -4,11 +4,11 @@ import React, { useState, useEffect } from "react";
 import { Menu, Room } from "@prisma/client";
 
 import { getMenuData, getRoomData } from "@/actions/fetcher";
+import { getImgSrc } from "@/utils/utils";
 
 import ImageCard from "@/components/ui/neo-brutalism/ImageCard";
 import Accordion from "@/components/ui/neo-brutalism/Accordion";
 import Button from "@/components/ui/neo-brutalism/Button";
-import { getImgSrc } from "@/utils/utils";
 
 interface MenuListProps {
   roomId: string;
