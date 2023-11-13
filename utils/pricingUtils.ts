@@ -4,5 +4,11 @@ export const parsePrice = (priceString: string): number => {
 };
 
 export const formatPrice = (price: number): string => {
-  return price.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+  const formattedPrice = price.toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
+
+  // Remove space between currency symbol and price
+  return formattedPrice.replace(/\s/g, "");
 };
