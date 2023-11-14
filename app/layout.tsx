@@ -33,7 +33,7 @@ export default function RootLayout({
         baseTheme: neobrutalism, // Use the dark theme from Clerk
       }}
     >
-      <html data-theme="pastel" lang="en">
+      <html lang="en">
         <body className={`${inter.className} overflow-hidden`}>
           {/* Include the Header component */}
           <Header />

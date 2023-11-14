@@ -8,7 +8,7 @@ export default async function RoomPage() {
   const rooms = await getListRoom();
   return (
     <>
-      <div className="flex flex-wrap justify-center items-center gap-5">
+      <div className="flex flex-wrap justify-center items-center gap-5 max-w-7xl">
         {rooms && rooms.length > 0 ? (
           rooms.map(async (room) => {
             const user = await clerkClient.users.getUser(room.hostedBy);
