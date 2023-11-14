@@ -30,10 +30,13 @@ function Navbar() {
             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
             <li>
-              <Link href="/">Dashboard</Link>
+              <Link href="/dashboard">Dashboard</Link>
             </li>
             <li>
               <Link href="/room">Room</Link>
+            </li>
+            <li>
+              <Link href="/ranking">Ranking</Link>
             </li>
           </ul>
         </div>

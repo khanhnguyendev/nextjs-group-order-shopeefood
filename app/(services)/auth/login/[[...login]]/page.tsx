@@ -6,7 +6,7 @@ type Props = {};
 
 // Create the Registration component
 const Registration = (props: Props) => {
-  return <SignIn />;
+  return <SignIn afterSignInUrl={"/dashboard"} />;
 };
 
 export default Registration;
