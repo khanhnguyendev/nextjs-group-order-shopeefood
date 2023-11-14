@@ -9,6 +9,7 @@ import "./globals.css";
 import StyledComponentsRegistry from "@/libs/AntdRegistry";
 import Sidebar from "@/components/common/Sidebar";
 import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
 
 // Create a custom font using the Inter font family with Latin subset
 const inter = Inter({ subsets: ["latin"] });
@@ -37,8 +38,6 @@ export default function RootLayout({
           {/* Include the Header component */}
           <Header />
           <div className="flex">
-            {/* Include the Sidebar component */}
-            <Sidebar />
             {/* Main content container */}
             <main className="text-black w-full h-screen overflow-auto">
               {/* Content area */}

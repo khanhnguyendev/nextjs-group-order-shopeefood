@@ -33,6 +33,7 @@
     "typescript": "5.2.2"
   },
   "devDependencies": {
+    "daisyui": "^4.0.4",
     "date-fns": "^2.30.0",
     "prisma": "^5.5.2"
   }

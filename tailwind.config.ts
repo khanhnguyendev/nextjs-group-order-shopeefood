@@ -18,6 +18,9 @@ const config: Config = {
       center: true,
     },
   },
-  plugins: [require("rippleui")],
+  plugins: [require("daisyui")],
+  daisyui: {
+    themes: ["bumblebee"],
+  },
 };
 export default config;

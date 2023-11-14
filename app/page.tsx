@@ -17,7 +17,7 @@ export default function Home() {
               href="/auth/login"
               className="hover:text-indigo-300 text-red-600"
             >
-              LogIn
+              Log In
             </Link>{" "}
             to use
           </p>
