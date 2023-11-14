@@ -8,7 +8,7 @@ import { getImgSrc } from "@/utils/utils";
 
 import ImageCard from "@/components/ui/neo-brutalism/ImageCard";
 import Accordion from "@/components/ui/neo-brutalism/Accordion";
-import Button from "@/components/ui/neo-brutalism/Button";
+import AddToCard from "../order/AddToCard";
 
 interface MenuListProps {
   roomId: string;
@@ -48,8 +48,6 @@ export default function MenuList({ roomId }: MenuListProps) {
     }
   }, [menu]);
 
-  const createNewOrder = () => {};
-
   return (
     <>
       {menu &&
@@ -63,9 +61,7 @@ export default function MenuList({ roomId }: MenuListProps) {
                   largestContentHeight={largestContentHeight}
                 />
                 <div className="text-center mt-2">
-                  <Button onClick={createNewOrder} disabled={false}>
-                    {dish.discountPrice ? dish.discountPrice : dish.price}
-                  </Button>
+                  <AddToCard dish={dish} roomId={roomId} />
                 </div>
               </div>
             </ImageCard>
