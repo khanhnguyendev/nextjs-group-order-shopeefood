@@ -43,8 +43,6 @@ export async function getMenuData({ restaurantId, deliveryId }: MenuDataProps) {
 }
 
 export async function getListRoom() {
-  const now = new Date();
-
   return await prisma.room.findMany();
 }
 

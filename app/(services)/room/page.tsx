@@ -1,4 +1,4 @@
-import { auth, clerkClient } from "@clerk/nextjs";
+import { clerkClient } from "@clerk/nextjs";
 
 import { getListRoom, getShopData } from "@/actions/fetcher";
 
@@ -6,7 +6,6 @@ import RoomList from "@/components/room/RoomList";
 
 export default async function RoomPage() {
   const rooms = await getListRoom();
-
   return (
     <>
       <div className="flex flex-wrap justify-center items-center gap-5">
@@ -22,9 +21,11 @@ export default async function RoomPage() {
               return (
                 <RoomList
                   key={room.id}
-                  roomId={room.id}
-                  user={user}
-                  shop={shopData}
+                  params={{
+                    roomId: room.id,
+                    user: user,
+                    shop: shopData,
+                  }}
                 />
               );
             }

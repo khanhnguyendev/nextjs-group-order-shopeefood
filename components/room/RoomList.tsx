@@ -1,29 +1,33 @@
 import React from "react";
 import { Shop } from "@prisma/client";
+import { User } from "@clerk/nextjs/server";
 
 import { getImgSrc } from "@/utils/utils";
 
-import Card from "@/components/room/RoomCard";
-import { User } from "@clerk/nextjs/server";
+import RoomCard from "@/components/room/RoomCard";
 
 interface RoomListProps {
-  roomId: string;
-  user: User;
-  shop: Shop;
+  params: {
+    roomId: string;
+    user: User;
+    shop: Shop;
+  };
 }
 
-const RoomList = ({ roomId, user, shop }: RoomListProps) => {
+const RoomList = ({ params }: RoomListProps) => {
   return (
     <>
-      {roomId && shop && (
-        <div key={shop.id}>
-          <Card
-            roomId={roomId}
-            user={user}
-            title={shop.name}
-            date={shop.createdAt}
-            imageSrc={getImgSrc(shop.photos)}
-            description={shop.description || ""}
+      {params.roomId && params.shop && (
+        <div key={params.shop.id}>
+          <RoomCard
+            params={{
+              roomId: params.roomId,
+              user: params.user,
+              title: params.shop.name,
+              date: params.shop.createdAt,
+              imageSrc: getImgSrc(params.shop.photos),
+              description: params.shop.description ?? "",
+            }}
           />
         </div>
       )}
