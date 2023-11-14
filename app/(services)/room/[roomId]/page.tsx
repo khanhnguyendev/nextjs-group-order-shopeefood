@@ -9,7 +9,7 @@ const RoomIdLayout = async ({ params }: { params: { roomId: string } }) => {
       <div className="flex justify-center flex-wrap w-full">
         <RoomInfo roomId={params.roomId} />
       </div>
-      <div className="flex justify-center flex-wrap gap-4 mt-5 py-5 border rounded-xl">
+      <div className="flex justify-center flex-wrap gap-4 mt-5 py-5 mx-6 border rounded-xl">
         <MenuList roomId={params.roomId} />
       </div>
     </div>

@@ -14,6 +14,7 @@ type Props = {
 const AddToCard = ({ params }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [note, setNote] = useState("");
+  const [quantity, setQuantity] = useState(1);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -27,7 +28,7 @@ const AddToCard = ({ params }: Props) => {
     try {
       const response = await axios.post("/api/order", {
         dish: params.dish,
-        quantity: 1,
+        quantity: quantity,
         roomId: params.roomId,
         note: note,
       });
@@ -70,6 +71,18 @@ const AddToCard = ({ params }: Props) => {
             value={note}
             onChange={(e) => setNote(e.target.value)}
           />
+
+          {/* Food Quantity */}
+          <div className="flex justify-center items-center w-full">
+            <input
+              type="number"
+              min={1}
+              max={10}
+              className="input input-bordered w-1/5"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.valueAsNumber)}
+            />
+          </div>
 
           {/* Button Actions */}
           <div className="flex flex-wrap w-full justify-center items-center">
