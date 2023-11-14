@@ -3,13 +3,13 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { dark, neobrutalism } from "@clerk/themes";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { ToastContainer } from 'react-toastify';
 
 import "./globals.css";
+import 'react-toastify/dist/ReactToastify.css';
 
 import StyledComponentsRegistry from "@/libs/AntdRegistry";
-import Sidebar from "@/components/common/Sidebar";
 import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
 
 // Create a custom font using the Inter font family with Latin subset
 const inter = Inter({ subsets: ["latin"] });
@@ -35,6 +35,18 @@ export default function RootLayout({
     >
       <html lang="en">
         <body className={`${inter.className} overflow-hidden`}>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
           {/* Include the Header component */}
           <Header />
           <div className="flex">
