@@ -5,8 +5,8 @@ import { Menu, Room } from "@prisma/client";
 
 import { getMenuData, getRoomData } from "@/actions/fetcher";
 
-import Loading from "@/components/common/Loading";
 import FoodCard from "@/components/room/FoodCard";
+import SkeletonCard from "@/components/SkeletonCard";
 
 interface MenuListProps {
   roomId: string;
@@ -36,7 +36,9 @@ export default function MenuList({ roomId }: MenuListProps) {
   if (isLoading) {
     return (
       <>
-        <Loading />
+        {[...Array(10)].map((x, i) => (
+          <SkeletonCard key={i} />
+        ))}
       </>
     );
   }

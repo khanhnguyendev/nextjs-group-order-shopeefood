@@ -42,7 +42,7 @@ const AddToCard = ({ params }: Props) => {
   return (
     <>
       <button className="btn btn-primary" onClick={openModal}>
-        {params.dish.discountPrice ?? params.dish.price}
+        {params.dish.discountPrice || params.dish.price}
       </button>
       <Modal isOpen={isModalOpen} title="Confirm your order">
         <div className="flex flex-wrap justify-center items-center gap-5">
