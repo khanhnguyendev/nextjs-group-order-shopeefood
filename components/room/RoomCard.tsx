@@ -1,12 +1,14 @@
 import Image from "next/image";
 import React from "react";
-import { User } from "@clerk/nextjs/server";
 import Link from "next/link";
+import { User } from "@clerk/nextjs/server";
+import { Room } from "@prisma/client";
+
 import { getDateAsString } from "@/utils/dateUtils";
 
 type Props = {
   params: {
-    roomId: string;
+    room: Room;
     user: User;
     date: Date;
     title: string;
@@ -28,7 +30,7 @@ const RoomCard = ({ params }: Props) => {
       </figure>
       <div className="card-body">
         <h2 className="card-title">
-          Shoes!
+          {params.room.roomName}
           <div className="badge badge-secondary">NEW</div>
         </h2>
         <p className="line-clamp-1">{params.title}</p>
@@ -36,11 +38,11 @@ const RoomCard = ({ params }: Props) => {
           <div className="badge badge-outline">
             {getDateAsString(params.date)}
           </div>
-          <div className="badge badge-outline">{params.user.lastName}</div>
+          <div className="badge badge-outline">{params.user.lastName && params.user.firstName}</div>
         </div>
       </div>
       <div className="flex justify-center items-center pb-2">
-        <Link href={`/room/${params.roomId}`}>
+        <Link href={`/room/${params.room.id}`}>
           <button className="btn btn-primary">Join</button>
         </Link>
       </div>

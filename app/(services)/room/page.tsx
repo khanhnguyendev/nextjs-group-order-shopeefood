@@ -22,7 +22,7 @@ export default async function RoomPage() {
                 <RoomList
                   key={room.id}
                   params={{
-                    roomId: room.id,
+                    room: room,
                     user: user,
                     shop: shopData,
                   }}

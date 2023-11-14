@@ -1,5 +1,5 @@
 import React from "react";
-import { Shop } from "@prisma/client";
+import { Room, Shop } from "@prisma/client";
 import { User } from "@clerk/nextjs/server";
 
 import { getImgSrc } from "@/utils/utils";
@@ -8,7 +8,7 @@ import RoomCard from "@/components/room/RoomCard";
 
 interface RoomListProps {
   params: {
-    roomId: string;
+    room: Room;
     user: User;
     shop: Shop;
   };
@@ -17,11 +17,11 @@ interface RoomListProps {
 const RoomList = ({ params }: RoomListProps) => {
   return (
     <>
-      {params.roomId && params.shop && (
+      {params.room && params.shop && (
         <div key={params.shop.id}>
           <RoomCard
             params={{
-              roomId: params.roomId,
+              room: params.room,
               user: params.user,
               title: params.shop.name,
               date: params.shop.createdAt,
