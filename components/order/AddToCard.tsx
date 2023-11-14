@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Menu } from "@prisma/client";
+import { toast } from 'react-toastify';
 
 import Modal from "@/components/Modal";
 
@@ -33,10 +34,11 @@ const AddToCard = ({ params }: Props) => {
         note: note,
       });
       if (response) {
-        alert(response.data);
+        toast.success(response.data);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      toast.error("Error while fetching data");
+      console.error("Error while fetching data:", error);
     }
   };
 
