@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Menu } from "@prisma/client";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 import Modal from "@/components/Modal";
 
@@ -37,7 +37,7 @@ const AddToCard = ({ params }: Props) => {
         toast.success(response.data);
       }
     } catch (error) {
-      toast.error("Error while fetching data");
+      toast.error("Error while processing your order");
       console.error("Error while fetching data:", error);
     }
   };

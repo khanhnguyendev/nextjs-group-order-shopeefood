@@ -151,7 +151,10 @@ export async function POST(req: Request) {
     return NextResponse.json(createRoom);
   } catch (error) {
     console.error(`[${API}]--[method:POST]`, error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    return NextResponse.json(
+      { error: "Error while creating room" },
+      { status: 500 }
+    );
   }
 }
 

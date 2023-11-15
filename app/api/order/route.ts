@@ -15,18 +15,24 @@ type OrderRequest = {
 
 export async function POST(req: Request) {
   try {
+    // Authorization
     const { userId } = auth();
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Step 1:
+    // Save user information to database
+    await saveUserInfo(userId);
+
+    // Step 2:
+    // Parse data from request
     const orderRequest: OrderRequest = await req.json();
-
     const { dish, quantity, roomId, note } = orderRequest;
-
     const price = parsePrice(dish.discountPrice) ?? parsePrice(dish.price);
 
-    // Check if the user has already placed an order for the same dish in the specified room
+    // Step 3:
+    // Check if the user has already placed an order for the same dish in the room
     const existingOrder = await prisma.order.findFirst({
       where: {
         userId,
@@ -38,6 +44,13 @@ export async function POST(req: Request) {
       },
     });
 
+    // Step 4:
+    // Get total spent of user
+    const currentUser = await prisma.user.findUnique({ where: { userId } });
+    let updatedTotalSpend = currentUser?.totalSpend || 0;
+
+    // Step 5:
+    // Save the order into database
     if (existingOrder) {
       // If an order already exists, update the quantity and amount
       const updatedOrder = await prisma.order.update({
@@ -47,6 +60,13 @@ export async function POST(req: Request) {
           amount: existingOrder.amount + quantity * price,
         },
       });
+
+      // Subtract the old amount from totalSpend and add the new amount
+      updatedTotalSpend += quantity * price - existingOrder.amount;
+
+      console.log(
+        `[${API}][method:POST][UpdateOrder] - [RoomID: ${roomId}][UserID: ${currentUser?.userId}][OrderID: ${updatedOrder.id}]`
+      );
 
       return NextResponse.json(`Order has been successfully updated!`);
     } else {
@@ -67,10 +87,64 @@ export async function POST(req: Request) {
         },
       });
 
+      // Add the new amount to totalSpend
+      updatedTotalSpend += amount;
+
+      console.log(
+        `[${API}][method:POST][NewOrder] [RoomID: ${roomId}][UserID: ${currentUser?.userId}][OrderID: ${newOrder.id}]`
+      );
+
       return NextResponse.json(`Order has been successfully created!`);
     }
   } catch (error) {
-    console.error(`[${API}]--[method:POST]`, error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error(`[${API}][method:POST]`, error);
+    return NextResponse.json(
+      { error: "Error while processing your order" },
+      { status: 500 }
+    );
   }
 }
+
+// Step 1:
+// Save user information to database
+const saveUserInfo = async (userId: string) => {
+  const currentUser = await clerkClient.users.getUser(userId);
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      userId,
+    },
+  });
+  if (existingUser) {
+    const updateUser = await prisma.user.update({
+      where: { userId },
+      data: {
+        firstName: currentUser.firstName || "",
+        lastName: currentUser.lastName || "",
+        imageUrl: currentUser.imageUrl,
+      },
+    });
+    console.log(
+      `[${API}][saveUserInfo][UpdateUser] - [UserID: ${updateUser.userId}]`
+    );
+  } else {
+    const newUser = await prisma.user.create({
+      data: {
+        userId,
+        email: currentUser.emailAddresses[0].emailAddress,
+        username: currentUser.username || "",
+        firstName: currentUser.firstName || "",
+        lastName: currentUser.lastName || "",
+        totalSpend: 0,
+        createdAt: currentUser.createdAt,
+        updatedAt: currentUser.updatedAt,
+        imageUrl: currentUser.imageUrl,
+        gender: currentUser.gender,
+        birthday: currentUser.birthday,
+        lastSignInAt: currentUser.lastSignInAt || Date.now(),
+      },
+    });
+    console.log(
+      `[${API}][saveUserInfo][NewUser] - [UserID: ${newUser.userId}]`
+    );
+  }
+};
