@@ -5,17 +5,21 @@ import { Menu, Room } from "@prisma/client";
 
 import { getMenuData, getRoomData } from "@/actions/fetcher";
 
-import FoodCard from "@/components/room/FoodCard";
+import FoodCard from "@/components/room/menu/MenuCard";
 import SkeletonCard from "@/components/SkeletonCard";
 
-interface MenuListProps {
-  roomId: string;
-}
+type MenuListProps = {
+  params: {
+    roomId: string;
+  };
+};
 
-export default function MenuList({ roomId }: MenuListProps) {
+const MenuList = ({ params }: MenuListProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [room, setRoomData] = useState<Room | null>();
-  const [menu, setMenuData] = useState<Menu[] | null>();
+  const [menus, setMenuData] = useState<Menu[] | null>();
+
+  const { roomId } = params;
 
   useEffect(() => {
     getRoomData({ roomId }).then((room) => {
@@ -36,22 +40,28 @@ export default function MenuList({ roomId }: MenuListProps) {
   if (isLoading) {
     return (
       <>
-        {[...Array(10)].map((x, i) => (
-          <SkeletonCard key={i} />
-        ))}
+        <div className="flex flex-wrap justify-center gap-4 mt-5 py-5 mx-6 border rounded-xl">
+          {[...Array(10)].map((x, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
       </>
     );
   }
   if (!isLoading) {
     return (
       <>
-        {menu &&
-          menu.map((dish) => (
-            <div key={dish.id} className="flex">
-              <FoodCard params={{ menu: dish, roomId: roomId }} />
-            </div>
-          ))}
+        <div className="flex flex-wrap justify-center gap-4 mt-5 py-5 mx-6 border rounded-xl">
+          {menus &&
+            menus.map((dish) => (
+              <div key={dish.id} className="flex">
+                <FoodCard params={{ menu: dish, roomId: roomId }} />
+              </div>
+            ))}
+        </div>
       </>
     );
   }
-}
+};
+
+export default MenuList;

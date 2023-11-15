@@ -3,7 +3,7 @@ import React from "react";
 import { Menu } from "@prisma/client";
 
 import { getImgSrc } from "@/utils/utils";
-import AddToCard from "@/components/order/AddToCard";
+import AddToCard from "@/components/room/order/AddToCard";
 
 type Props = {
   params: {

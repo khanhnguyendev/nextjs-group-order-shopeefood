@@ -73,6 +73,7 @@ model Order {
   price        String
   quantity     Int
   amount       Int
+  note         String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
