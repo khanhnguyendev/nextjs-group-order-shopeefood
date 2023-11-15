@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { MdOutlineDeleteForever } from "react-icons/md";
+import { toast } from "react-toastify";
 import { Order } from "@prisma/client";
 
 import { getOrderByRoomId } from "@/actions/order";
 import { formatPrice } from "@/utils/pricingUtils";
-import OrderName from "./OrderName";
+
+import OrderName from "@/components/room/order/OrderName";
 
 type Props = {
   params: {
@@ -25,6 +27,14 @@ const OrderList = ({ params }: Props) => {
       setIsLoading(false);
     });
   }, [roomId]);
+
+  const editOrder = () => {
+    toast.warning("Chưa làm ^.^");
+  };
+
+  const deleteOrder = () => {
+    toast.warning("Chưa làm ^.^");
+  };
 
   if (isLoading) {
     return (
@@ -168,10 +178,16 @@ const OrderList = ({ params }: Props) => {
                         </div>
                       </td>
                       <th>
-                        <button className="btn btn-outline btn-success btn-xs mr-1">
+                        <button
+                          className="btn btn-outline btn-success btn-xs mr-1"
+                          onClick={editOrder}
+                        >
                           <FaRegEdit />
                         </button>
-                        <button className="btn btn-outline btn-error btn-xs">
+                        <button
+                          className="btn btn-outline btn-error btn-xs"
+                          onClick={deleteOrder}
+                        >
                           <MdOutlineDeleteForever />
                         </button>
                       </th>

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import classNames from "classnames";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 import Input from "@/components/ui/neo-brutalism/Input";
 import Button from "@/components/ui/neo-brutalism/Button";
@@ -42,18 +43,29 @@ const CreateRoom = () => {
         const now = Date.now();
         const twoHoursLater = new Date(now + 2 * 60 * 60 * 1000);
 
-        const response = await axios.post("/api/room/create", {
-          shopUrl: roomData.shopUrl,
-          roomName: roomData.roomName,
-          expiredAt: twoHoursLater,
-          isPrivate: roomData.isPrivate,
-          password: roomData.password,
+        const promise = new Promise(async (resolve, reject) => {
+          const response = await axios.post("/api/room/create", {
+            shopUrl: roomData.shopUrl,
+            roomName: roomData.roomName,
+            expiredAt: twoHoursLater,
+            isPrivate: roomData.isPrivate,
+            password: roomData.password,
+          });
+
+          if (response?.data?.id) {
+            const roomId = response?.data?.id;
+            router.replace(`/room/${roomId}`);
+            resolve("Room created successfully");
+          } else {
+            reject("Failed to create room");
+          }
         });
 
-        if (response?.data?.id) {
-          const roomId = response?.data?.id;
-          router.replace(`/room/${roomId}`);
-        }
+        await toast.promise(promise, {
+          pending: "Creating room...",
+          success: "Room created successfully",
+          error: "Error while creating room",
+        });
       } catch (error) {
         console.error("Error fetching data:", error);
       }
