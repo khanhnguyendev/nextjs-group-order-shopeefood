@@ -69,7 +69,5 @@ export async function getOrderSummaryByRoomId(
   // Convert the object values to an array
   const foodSummaryArray: FoodSummary[] = Object.values(foodSummaryMap);
 
-  console.log(foodSummaryArray);
-
   return foodSummaryArray;
 }

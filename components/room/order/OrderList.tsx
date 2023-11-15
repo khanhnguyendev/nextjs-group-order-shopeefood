@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { MdOutlineDeleteForever } from "react-icons/md";
-import Image from "next/image";
 import { Order } from "@prisma/client";
 
 import { getOrderByRoomId } from "@/actions/order";
-import { getDateAsString } from "@/utils/dateUtils";
 import { formatPrice } from "@/utils/pricingUtils";
+import OrderName from "./OrderName";
 
 type Props = {
   params: {
@@ -21,10 +20,97 @@ const OrderList = ({ params }: Props) => {
   const { roomId } = params;
 
   useEffect(() => {
-    getOrderByRoomId(roomId).then((order) => {
-      setOrderData(order);
+    getOrderByRoomId(roomId).then((orders) => {
+      setOrderData(orders);
+      setIsLoading(false);
     });
   }, [roomId]);
+
+  if (isLoading) {
+    return (
+      <>
+        <div className="flex flex-wrap justify-center gap-4 mt-5 py-5 mx-6 border rounded-xl">
+          <div className="grid card rounded-box place-items-center">
+            <div className="overflow-x-auto">
+              <table className="table">
+                {/* head */}
+                <thead>
+                  <tr>
+                    <th>
+                      <label>
+                        <input type="checkbox" className="checkbox" />
+                      </label>
+                    </th>
+                    <th>Name</th>
+                    <th>Food</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                  </tr>
+                </thead>
+
+                {/* body */}
+                <tbody>
+                  {[...Array(5)].map((x, i) => (
+                    <tr key={i}>
+                      <th>
+                        <label>
+                          <input type="checkbox" className="checkbox" />
+                        </label>
+                      </th>
+                      {/* Name */}
+                      <td>
+                        <div className="flex items-center gap-3">
+                          <div className="avatar">
+                            <div className="skeleton w-16 h-16 rounded-full shrink-0"></div>
+                          </div>
+                          <div className="flex flex-col w-[120px] gap-2 ">
+                            <div className="skeleton h-4 w-full"></div>
+                            <div className="skeleton h-4 w-full"></div>
+                          </div>
+                        </div>
+                      </td>
+                      {/* Food */}
+                      <td>
+                        <div className="flex flex-wrap w-[120px] gap-2 ">
+                          <div className="skeleton h-4 w-full"></div>
+                          <div className="skeleton h-4 w-full"></div>
+                        </div>
+                      </td>
+                      {/* Subtotal */}
+                      <td>
+                        <div className="flex flex-wrap gap-2">
+                          <div className="skeleton h-4 w-28"></div>
+                        </div>
+                      </td>
+                      <th>
+                        <button className="btn btn-outline btn-success btn-xs mr-1">
+                          <FaRegEdit />
+                        </button>
+                        <button className="btn btn-outline btn-error btn-xs">
+                          <MdOutlineDeleteForever />
+                        </button>
+                      </th>
+                    </tr>
+                  ))}
+                </tbody>
+
+                {/* foot */}
+                <tfoot>
+                  <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Food</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -42,7 +128,7 @@ const OrderList = ({ params }: Props) => {
                   </th>
                   <th>Name</th>
                   <th>Food</th>
-                  <th>Totals</th>
+                  <th>Subtotal</th>
                   <th></th>
                 </tr>
               </thead>
@@ -57,26 +143,11 @@ const OrderList = ({ params }: Props) => {
                           <input type="checkbox" className="checkbox" />
                         </label>
                       </th>
+                      {/* Name */}
                       <td>
-                        <div className="flex items-center gap-3">
-                          <div className="avatar">
-                            <div className="mask mask-squircle w-12 h-12">
-                              <Image
-                                src="https://www.svgrepo.com/show/452030/avatar-default.svg"
-                                alt=""
-                                width={50}
-                                height={50}
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <div className="font-bold">{order.userId}</div>
-                            <div className="text-sm opacity-50">
-                              {getDateAsString(order.createdAt)}
-                            </div>
-                          </div>
-                        </div>
+                        <OrderName params={{ order: order }} />
                       </td>
+                      {/* Food */}
                       <td>
                         {order.name} x {order.quantity}
                         <br />
@@ -90,6 +161,7 @@ const OrderList = ({ params }: Props) => {
                           </span>
                         )}
                       </td>
+                      {/* Subtotal */}
                       <td>
                         <div className="badge badge-secondary badge-outline">
                           {formatPrice(order.amount)}
@@ -113,7 +185,7 @@ const OrderList = ({ params }: Props) => {
                   <th></th>
                   <th>Name</th>
                   <th>Food</th>
-                  <th>Totals</th>
+                  <th>Subtotal</th>
                   <th></th>
                 </tr>
               </tfoot>
