@@ -29,7 +29,7 @@ const OrderList = ({ params }: Props) => {
   if (isLoading) {
     return (
       <>
-        <div className="flex flex-wrap justify-center gap-4 mt-5 py-5 mx-6 border rounded-xl">
+        <div className="flex flex-wrap justify-center gap-4 py-5 mx-6 border rounded-xl">
           <div className="grid card rounded-box place-items-center">
             <div className="overflow-x-auto">
               <table className="table">
@@ -114,7 +114,7 @@ const OrderList = ({ params }: Props) => {
 
   return (
     <>
-      <div className="flex flex-wrap justify-center gap-4 mt-5 py-5 mx-6 border rounded-xl">
+      <div className="flex flex-wrap justify-center gap-4 py-5 mx-6 border rounded-xl">
         <div className="grid card rounded-box place-items-center">
           <div className="overflow-x-auto">
             <table className="table">

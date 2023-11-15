@@ -6,13 +6,10 @@ function Navbar() {
   const { userId } = auth();
 
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-base-100 border border-b-sky-100-200 rounded-lg">
       <div className="navbar-start">
         <div className="dropdown">
-          <label
-            tabIndex={0}
-            className="btn btn-ghost btn-circle border-b-sky-200"
-          >
+          <label tabIndex={0} className="btn btn-ghost btn-circle">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"

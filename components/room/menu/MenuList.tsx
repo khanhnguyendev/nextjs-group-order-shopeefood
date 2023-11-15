@@ -40,7 +40,7 @@ const MenuList = ({ params }: MenuListProps) => {
   if (isLoading) {
     return (
       <>
-        <div className="flex flex-wrap justify-center gap-4 mt-5 py-5 mx-6 border rounded-xl">
+        <div className="flex flex-wrap justify-center gap-4 py-5 mx-6 border rounded-xl">
           {[...Array(10)].map((x, i) => (
             <SkeletonCard key={i} />
           ))}
@@ -51,7 +51,7 @@ const MenuList = ({ params }: MenuListProps) => {
   if (!isLoading) {
     return (
       <>
-        <div className="flex flex-wrap justify-center gap-4 mt-5 py-5 mx-6 border rounded-xl">
+        <div className="flex flex-wrap justify-center gap-4 py-5 mx-6 border rounded-xl">
           {menus &&
             menus.map((dish) => (
               <div key={dish.id} className="flex">
