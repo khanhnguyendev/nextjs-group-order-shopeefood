@@ -41,6 +41,7 @@ const OrderSummary = ({ params }: Props) => {
               <thead>
                 <tr>
                   <th>Food</th>
+                  <th>Quantity</th>
                   <th>Note</th>
                   <th>Subtotal</th>
                   <th></th>
@@ -86,8 +87,8 @@ const OrderSummary = ({ params }: Props) => {
                         {order.note.map(
                           (note) =>
                             note && (
-                              <div key={note} className="text-sm opacity-50">
-                                <div className="badge badge-primary mb-1">
+                              <div key={note}>
+                                <div className="badge badge-secondary mb-1">
                                   {note}
                                 </div>
                               </div>
@@ -97,7 +98,7 @@ const OrderSummary = ({ params }: Props) => {
 
                       {/* Food Subtotal */}
                       <td>
-                        <div className="badge badge-secondary badge-outline">
+                        <div className="badge badge-primary badge-outline">
                           {formatPrice(order.totalAmount)}
                         </div>
                       </td>
@@ -109,6 +110,7 @@ const OrderSummary = ({ params }: Props) => {
               <tfoot>
                 <tr>
                   <th>Food</th>
+                  <th>Quantity</th>
                   <th>Note</th>
                   <th>Subtotal</th>
                   <th></th>
