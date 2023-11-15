@@ -10,6 +10,7 @@ type OrderRequest = {
   dish: Menu;
   quantity: number;
   roomId: string;
+  note: string;
 };
 
 export async function POST(req: Request) {
@@ -21,7 +22,7 @@ export async function POST(req: Request) {
 
     const orderRequest: OrderRequest = await req.json();
 
-    const { dish, quantity, roomId } = orderRequest;
+    const { dish, quantity, roomId, note } = orderRequest;
 
     const price = parsePrice(dish.discountPrice) ?? parsePrice(dish.price);
 
@@ -33,6 +34,7 @@ export async function POST(req: Request) {
         restaurantId: dish.restaurantId,
         deliveryId: dish.deliveryId,
         name: dish.name,
+        note: note,
       },
     });
 
@@ -61,6 +63,7 @@ export async function POST(req: Request) {
           price: formatPrice(price),
           quantity: quantity,
           amount: amount,
+          note: note,
         },
       });
 
