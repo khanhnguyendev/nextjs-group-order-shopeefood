@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 
 import MenuList from "@/components/room/menu/MenuList";
-import OrderSummary from "@/components/room/order/OrderSummary";
+import Summary from "@/components/room/summary/Summary";
 import OrderList from "@/components/room/order/OrderList";
 
 type Props = {
@@ -65,7 +65,7 @@ const RoomAction = ({ params }: Props) => {
       )}
 
       {activeComponent === "OrderSummary" && (
-        <OrderSummary params={{ roomId: params.roomId }} />
+        <Summary params={{ roomId: params.roomId }} />
       )}
     </>
   );
