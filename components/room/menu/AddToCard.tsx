@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Menu } from "@prisma/client";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 import Modal from "@/components/Modal";
 
@@ -27,18 +27,28 @@ const AddToCard = ({ params }: Props) => {
 
   const createNewOrder = async () => {
     try {
-      const response = await axios.post("/api/order", {
-        dish: params.dish,
-        quantity: quantity,
-        roomId: params.roomId,
-        note: note,
+      const promise = new Promise(async (resolve, reject) => {
+        const response = await axios.post("/api/order", {
+          dish: params.dish,
+          quantity: quantity,
+          roomId: params.roomId,
+          note: note,
+        });
+        if (response) {
+          resolve(response.data);
+        } else {
+          reject("Error while processing your order. Please try again.");
+        }
       });
-      if (response) {
-        toast.success(response.data);
-      }
+
+      await toast.promise(promise, {
+        pending: "Processing your order...",
+        success: "Your order has been placed",
+        error: "Error while processing your order. Please try again.",
+      });
     } catch (error) {
-      toast.error("Error while fetching data");
-      console.error("Error while fetching data:", error);
+      toast.error("Error while processing your order. Please try again.");
+      console.error("Error while creating order:", error);
     }
   };
 

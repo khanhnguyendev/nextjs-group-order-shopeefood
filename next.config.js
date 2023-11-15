@@ -4,7 +4,7 @@ const nextConfig = {
     serverActions: true,
   },
   images: {
-    domains: ["svgrepo.com", "images.foody.vn"],
+    domains: ["img.clerk.com", "svgrepo.com", "images.foody.vn"],
   },
 };
 

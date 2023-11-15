@@ -81,19 +81,19 @@ model Order {
 }
 
 model User {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId       String   @unique
-  email        String   @unique
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String @unique
+  email        String @unique
   username     String
   firstName    String
   lastName     String
-  createdAt    DateTime
-  updatedAt    DateTime
+  totalSpend   Int    @default(0)
+  createdAt    Int
+  updatedAt    Int
   imageUrl     String
-  hasImage     Boolean
   gender       String
   birthday     String
-  lastSignInAt DateTime @default(now())
+  lastSignInAt Int
 
   @@index([userId, email])
 }

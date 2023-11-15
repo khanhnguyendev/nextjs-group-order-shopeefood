@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 
 import MenuList from "@/components/room/menu/MenuList";
-import OrderSummary from "@/components/room/order/OrderSummary";
-import OrderList from "./order/OrderList";
+import Summary from "@/components/room/summary/Summary";
+import OrderList from "@/components/room/order/OrderList";
 
 type Props = {
   params: {
@@ -21,7 +21,7 @@ const RoomAction = ({ params }: Props) => {
 
   return (
     <>
-      <div className="flex flex-wrap justify-center items-center join w-full">
+      <div className="flex flex-wrap justify-center items-center join w-full mb-5">
         {/* Menu Component */}
         <input
           className="join-item btn"
@@ -65,7 +65,7 @@ const RoomAction = ({ params }: Props) => {
       )}
 
       {activeComponent === "OrderSummary" && (
-        <OrderSummary params={{ roomId: params.roomId }} />
+        <Summary params={{ roomId: params.roomId }} />
       )}
     </>
   );
