@@ -17,30 +17,41 @@ type MenuDataProps = {
 };
 
 export async function getRoomData({ roomId }: RoomDataProps) {
-  const room = await prisma.room.findUnique({
+  return await prisma.room.findUnique({
     where: {
       id: roomId,
     },
   });
-  return room;
 }
 
 export async function getShopData({ restaurantId, deliveryId }: ShopDataProps) {
-  const shop = await prisma.shop.findUnique({
+  return await prisma.shop.findUnique({
     where: {
       restaurantId,
       deliveryId,
     },
   });
-  return shop;
 }
 
 export async function getMenuData({ restaurantId, deliveryId }: MenuDataProps) {
-  const menu = await prisma.menu.findMany({
+  return await prisma.menu.findMany({
     where: {
       restaurantId,
       deliveryId,
     },
   });
-  return menu;
+}
+
+export async function getListRoom() {
+  return await prisma.room.findMany();
+}
+
+export async function getListShopByDeliveryIds(deliveryIds: number[]) {
+  return await prisma.shop.findMany({
+    where: {
+      deliveryId: {
+        in: deliveryIds,
+      },
+    },
+  });
 }

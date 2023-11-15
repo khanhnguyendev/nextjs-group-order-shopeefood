@@ -63,6 +63,23 @@ model Menu {
   @@index([restaurantId, deliveryId])
 }
 
+model Order {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String
+  roomId       String
+  restaurantId Int
+  deliveryId   Int
+  name         String
+  price        String
+  quantity     Int
+  amount       Int
+  note         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([roomId, userId, restaurantId, deliveryId])
+}
+
 model User {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   userId       String   @unique

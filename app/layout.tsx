@@ -3,9 +3,13 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { dark, neobrutalism } from "@clerk/themes";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Header from "@/components/common/Header";
+import { ToastContainer } from 'react-toastify';
+
 import "./globals.css";
+import 'react-toastify/dist/ReactToastify.css';
+
 import StyledComponentsRegistry from "@/libs/AntdRegistry";
+import Header from "@/components/common/Header";
 
 // Create a custom font using the Inter font family with Latin subset
 const inter = Inter({ subsets: ["latin"] });
@@ -30,16 +34,30 @@ export default function RootLayout({
       }}
     >
       <html lang="en">
-        <body className={inter.className}>
+        <body className={`${inter.className} overflow-hidden`}>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
           {/* Include the Header component */}
           <Header />
-          {/* Main content container */}
-          <main className="mx-auto dark:text-indigo-50 text-black mt-[40px]">
-            {/* Content area */}
-            <div className="flex items-start justify-center min-h-screen">
-              <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
-            </div>
-          </main>
+          <div className="flex">
+            {/* Main content container */}
+            <main className="text-black w-full h-screen overflow-auto">
+              {/* Content area */}
+              <div className="flex items-start justify-center mt-[40px] mb-[150px] mx-auto">
+                <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+              </div>
+            </main>
+          </div>
         </body>
       </html>
     </ClerkProvider>

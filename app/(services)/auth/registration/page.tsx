@@ -6,7 +6,7 @@ type Props = {};
 
 // Create the SignUpPage component
 const SignUpPage = (props: Props) => {
-  return <SignUp />;
+  return <SignUp afterSignUpUrl={"/dashboard"} />;
 };
 
 export default SignUpPage;

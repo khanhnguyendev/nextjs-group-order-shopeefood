@@ -1,6 +1,5 @@
 import { auth } from "@clerk/nextjs"; // Clerk authentication
-
-import CreateRoom from "@/components/createroom/CreateRoom";
+import Link from "next/link";
 
 // Define the Home functional component
 export default function Home() {
@@ -12,14 +11,21 @@ export default function Home() {
       {!userId && (
         <>
           <p className="mb-4">Welcome to group order ShopeeFood</p>
-          <p className="mb-4">Please login to use!</p>
+          <p className="mb-4">
+            Please{" "}
+            <Link
+              href="/auth/login"
+              className="hover:text-indigo-300 text-red-600"
+            >
+              Log In
+            </Link>{" "}
+            to use
+          </p>
         </>
       )}
       {userId && (
         <>
-          <div className="flex justify-center">
-            <CreateRoom />
-          </div>
+          <div className="flex justify-center">Welcome, {userId}</div>
         </>
       )}
     </main>
