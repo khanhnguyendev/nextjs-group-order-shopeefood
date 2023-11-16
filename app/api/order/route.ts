@@ -13,6 +13,12 @@ type OrderRequest = {
   note: string;
 };
 
+type UpdateOrderRequest = {
+  orderId: string;
+  updatedNote: string;
+  updatedQuantity: number;
+};
+
 export async function POST(req: Request) {
   try {
     // Authorization
@@ -100,6 +106,64 @@ export async function POST(req: Request) {
     console.error(`[${API}][method:POST]`, error);
     return NextResponse.json(
       { error: "Error while processing your order" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(req: Request) {
+  try {
+    // Authorization
+    const { userId } = auth();
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    // Step 1: Get orderID from request
+    const updateOrderRequest: UpdateOrderRequest = await req.json();
+    const { orderId, updatedNote, updatedQuantity } = updateOrderRequest;
+
+    // Step 2: Validate order ID
+    const order = await prisma.order.findUnique({
+      where: {
+        id: orderId,
+      },
+    });
+
+    if (!order) {
+      return NextResponse.json(
+        { error: `OrderID: ${orderId} not found` },
+        { status: 200 }
+      );
+    }
+
+    // Step 3: Validate user permission
+    if (order.userId != userId) {
+      return NextResponse.json(
+        { error: `You do not have permission` },
+        { status: 200 }
+      );
+    }
+
+    // Step 4: Update order
+    await prisma.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        note: updatedNote,
+        quantity: updatedQuantity,
+      },
+    });
+
+    return NextResponse.json(
+      { message: `Order updated successfully` },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error(`[${API}][method:PATCH]`, error);
+    return NextResponse.json(
+      { error: "Error while updating your order" },
       { status: 500 }
     );
   }
