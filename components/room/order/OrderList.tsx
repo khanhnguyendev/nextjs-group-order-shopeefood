@@ -87,7 +87,7 @@ const OrderList = ({ params }: Props) => {
   };
 
   const deleteOrder = (orderId: string) => {
-    toast.error(`Deleting order ${orderId}`);
+    toast.warning(`Chưa làm ^.^`);
   };
 
   if (isLoading) {
